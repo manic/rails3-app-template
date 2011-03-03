@@ -1,22 +1,38 @@
+# rails new APP_NAME -T -J -d mysql -m rails3-app-template/rails3.rb
+#
+# >----------------------------[ Initial Setup ]------------------------------<
+
+initializer 'generators.rb', <<-RUBY
+Rails.application.config.generators do |g|
+end
+RUBY
+
+def say_recipe(name); say "\033[36m" + "recipe".rjust(10) + "\033[0m" + "    Running #{name} recipe..." end
+def say_wizard(text); say "\033[36m" + "wizard".rjust(10) + "\033[0m" + "    #{text}" end
+
 # remove files
-run "rm README"
-run "rm public/index.html"
-run "rm public/images/rails.png"
+say_recipe 'remove files'
+remove_file "README"
+remove_file "public/index.html"
+remove_file "public/images/rails.png"
 run "cp config/database.yml config/database.yml.example"
 
 # install gems
-run "rm Gemfile"
-file 'Gemfile', File.read("#{File.dirname(rails_template)}/Gemfile")
+say_recipe 'install gems'
+remove_file "Gemfile"
+copy_file   "#{File.dirname(rails_template)}/Gemfile", "Gemfile"
 
 # bundle install
 run "bundle install"
 
 # generate rspec
+say_recipe 'install rspec'
 generate "rspec:install"
 
+say_recipe 'setup environment'
 # copy files
-file 'script/watchr.rb', File.read("#{File.dirname(rails_template)}/watchr.rb")
-file 'lib/tasks/dev.rake', File.read("#{File.dirname(rails_template)}/dev.rake")
+copy_file  "#{File.dirname(rails_template)}/watchr.rb",   "script/watchr.rb"
+copy_file  "#{File.dirname(rails_template)}/dev.rake",    "lib/tasks/dev/rake"
 
 # remove active_resource and test_unit
 gsub_file 'config/application.rb', /require 'rails\/all'/, <<-CODE
@@ -27,16 +43,20 @@ gsub_file 'config/application.rb', /require 'rails\/all'/, <<-CODE
 CODE
 
 # install jquery
-run "curl -L http://code.jquery.com/jquery.min.js > public/javascripts/jquery.js"
-run "curl -L http://github.com/rails/jquery-ujs/raw/master/src/rails.js > public/javascripts/rails.js"
+inside "public/javascripts" do
+  get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "rails.js"
+  get "http://code.jquery.com/jquery-1.5.min.js",                    "jquery.js"
+end
 
-gsub_file 'config/application.rb', /(config.action_view.javascript_expansions.*)/, 
-                                   "config.action_view.javascript_expansions[:defaults] = %w(jquery rails)"
+application do
+  "\nconfig.action_view.javascript_expansions[:defaults] = %w(jquery rails)\n"
+end
 
 # add time format
 environment 'Time::DATE_FORMATS.merge!(:default => "%Y/%m/%d %I:%M %p", :ymd => "%Y/%m/%d")'
 
 # .gitignore
+say_recipe 'setup .gitignore'
 append_file '.gitignore', <<-CODE
 config/database.yml
 Thumbs.db
@@ -46,10 +66,11 @@ coverage/*
 CODE
 
 # keep tmp and log
-run "touch tmp/.gitkeep"
-run "touch log/.gitkeep"
+empty_directory_with_gitkeep "tmp"
+empty_directory_with_gitkeep "log"
 
 # git commit
+say_recipe 'git commit'
 git :init
 git :add => '.'
 git :add => 'tmp/.gitkeep -f'
