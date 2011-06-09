@@ -45,12 +45,11 @@ CODE
 # install jquery
 inside "public/javascripts" do
   get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "rails.js"
-  get "http://code.jquery.com/jquery-1.5.min.js",                    "jquery.js"
+  get "http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", "jquery.js"
 end
 
-application do
-  "\nconfig.action_view.javascript_expansions[:defaults] = %w(jquery rails)\n"
-end
+
+application "config.action_view.javascript_expansions[:defaults] = %w(jquery rails)"
 
 # add time format
 environment 'Time::DATE_FORMATS.merge!(:default => "%Y/%m/%d %I:%M %p", :ymd => "%Y/%m/%d")'
