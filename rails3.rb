@@ -32,7 +32,7 @@ generate "rspec:install"
 say_recipe 'setup environment'
 # copy files
 copy_file  "#{File.dirname(rails_template)}/watchr.rb",   "script/watchr.rb"
-copy_file  "#{File.dirname(rails_template)}/dev.rake",    "lib/tasks/dev/rake"
+copy_file  "#{File.dirname(rails_template)}/dev.rake",    "lib/tasks/dev.rake"
 
 # remove active_resource and test_unit
 gsub_file 'config/application.rb', /require 'rails\/all'/, <<-CODE
