@@ -1,16 +1,17 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.7'
+gem 'rails'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2'
+gem 'mysql2', "~>0.2.1"
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'moneta'
 
 gem 'yajl-ruby', :require => 'yajl'
 gem 'nokogiri'
+gem 'devise'
 
 # Paginator
 # gem "kaminari"
@@ -20,7 +21,6 @@ gem 'nokogiri'
 # gem 'paperclip'
 # gem 'carrierwave'
 
-# gem 'devise', '~> 1.1.7'
 # gem "cancan"
 # gem "simple_form"
 # gem 'fastercsv' # for Ruby 1.8.7+
