@@ -32,7 +32,7 @@ generate "rspec:install"
 say_recipe 'setup environment'
 # copy files
 copy_file  "#{File.dirname(rails_template)}/watchr.rb",   "script/watchr.rb"
-copy_file  "#{File.dirname(rails_template)}/dev.rake",    "lib/tasks/dev/rake"
+copy_file  "#{File.dirname(rails_template)}/dev.rake",    "lib/tasks/dev.rake"
 
 # remove active_resource and test_unit
 gsub_file 'config/application.rb', /require 'rails\/all'/, <<-CODE
@@ -45,12 +45,11 @@ CODE
 # install jquery
 inside "public/javascripts" do
   get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "rails.js"
-  get "http://code.jquery.com/jquery-1.5.min.js",                    "jquery.js"
+  get "http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", "jquery.js"
 end
 
-application do
-  "\nconfig.action_view.javascript_expansions[:defaults] = %w(jquery rails)\n"
-end
+
+application "config.action_view.javascript_expansions[:defaults] = %w(jquery rails)"
 
 # add time format
 environment 'Time::DATE_FORMATS.merge!(:default => "%Y/%m/%d %I:%M %p", :ymd => "%Y/%m/%d")'
